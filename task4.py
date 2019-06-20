@@ -7,7 +7,7 @@ m = int(input())
 
 number_of_elms = 1
 
-center = (n-1)/2
+center = (n - 1) / 2
 
 for i in range(n):
 

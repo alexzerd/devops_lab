@@ -2,7 +2,6 @@
 directions = input("Input directions in capital letters\n")
 
 x = 0
-
 y = 0
 
 length = len(directions)
@@ -25,12 +24,10 @@ for i in range(length):
 
         x -= 1
 
-
-
 if (x == 0) and (y == 0):
 
     print("true")
 
 else:
-    
+
     print("false")

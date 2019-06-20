@@ -19,4 +19,4 @@ for i in range(n):
 
 query = input("Input name of student\t")
 
-print(sum(student_marks[query])/3)
+print(sum(student_marks[query]) / 3)
