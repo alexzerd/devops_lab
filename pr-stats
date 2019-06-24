@@ -1,0 +1,70 @@
+import json
+import os
+import getpass
+import requests
+import datetime
+import calendar
+import argparse
+
+parser = argparse.ArgumentParser()
+
+parser.add_argument("user", help="sets login to github authentication")
+parser.add_argument("--repo", help="sets desired repository")
+parser.add_argument("--top", help="sets desired number of pull requests",
+                    type=int)
+parser.add_argument("--version", help="shows version",
+                    action="store_true")
+
+args = parser.parse_args()
+
+USERNAME = args.user
+
+if args.version:
+    print("0.0.1")
+    quit()
+
+if args.repo:
+    REPO_NAME = args.repo
+else:
+    REPO_NAME = 'alenaPy/devops_lab'
+
+if args.top:
+    N = args.top
+else:
+    N = 10
+
+PASSWORD = getpass.getpass()
+
+url = 'https://api.github.com/repos/%s/pulls?per_page=100' % (REPO_NAME)
+
+session = requests.Session()
+session.auth = (USERNAME, PASSWORD)
+
+r = session.get(url)
+
+data = json.loads(r.text)
+
+columns = ['Date', 'Week', 'Day', 'Hour', 'User', 'State', 'Label']
+print('{:<15s}{:<10s}{:<10s}{:^10s}{:^20s}{:^10s}{:^15s}'.format(
+      columns[0], columns[1], columns[2], columns[3],
+      columns[4], columns[5], columns[6]))
+
+for i in range(N):
+
+        creation_date = data[i]['created_at'][0:10]
+        time = data[i]['created_at'][11:13]
+        born = datetime.datetime.strptime(creation_date, '%Y-%m-%d').weekday()
+        week = datetime.datetime.strptime(creation_date, '%Y-%m-%d').isocalendar()[1]
+        user = data[i]['user']['login']
+        state = data[0]['state']
+        label = 'None'
+
+        if data[i]['labels']:
+            label = data[i]['labels'][0]['name']
+
+        print('{:<15s}{:<10d}{:<10s}{:^10s}{:^20s}{:^10s}{:^15s}'.format(
+              creation_date, week, calendar.day_name[born], time,
+              user, state, label))
+
+
+session.close()
