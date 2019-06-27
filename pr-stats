@@ -14,7 +14,14 @@ parser.add_argument("--top", help="sets desired number of pull requests",
                     type=int)
 parser.add_argument("--version", help="shows version",
                     action="store_true")
-
+parser.add_argument("--week", help="shows week number",
+                    action="store_true")
+parser.add_argument("--labels", help="shows labels",
+                    action="store_true")
+parser.add_argument("--state", help="shows state",
+                    action="store_true")
+parser.add_argument("--time", help="shows time info",
+                    action="store_true")
 args = parser.parse_args()
 
 USERNAME = args.user
@@ -51,20 +58,38 @@ print('{:<15s}{:<10s}{:<10s}{:^10s}{:^20s}{:^10s}{:^15s}'.format(
 
 for i in range(N):
 
-        creation_date = data[i]['created_at'][0:10]
+    creation_date = " - "
+    born = " - "
+    creation_date = data[i]['created_at'][0:10]
+    day_name = " - "
+    time = " - "
+    if args.time:
         time = data[i]['created_at'][11:13]
         born = datetime.datetime.strptime(creation_date, '%Y-%m-%d').weekday()
-        week = datetime.datetime.strptime(creation_date, '%Y-%m-%d').isocalendar()[1]
+        day_name = calendar.day_name[born]
+
+
+    week = " - "
+    user = " - "
+    state = " - "
+
+    if args.week:
+        week = str(datetime.datetime.strptime(creation_date, '%Y-%m-%d').isocalendar()[1])
+
+    if args.user:
         user = data[i]['user']['login']
+
+    if args.state:
         state = data[0]['state']
-        label = 'None'
 
-        if data[i]['labels']:
-            label = data[i]['labels'][0]['name']
+    label = ' - '
 
-        print('{:<15s}{:<10d}{:<10s}{:^10s}{:^20s}{:^10s}{:^15s}'.format(
-              creation_date, week, calendar.day_name[born], time,
-              user, state, label))
+    if args.labels and data[i]['labels']:
+        label = data[i]['labels'][0]['name']
+
+    print('{:<15s}{:<10s}{:<10s}{:^10s}{:^20s}{:^10s}{:^15s}'.format(
+             creation_date, week, day_name, time,
+             user, state, label))
 
 
 session.close()
