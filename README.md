@@ -4,7 +4,6 @@ To install package execute:
 
 To test it:
 
-  1. make sure you have time.conf file
-  2. from monitor_example import Monitor
-  3. test = Monitor()
-  4. test.snapshot()
+  1. from monitor_example import Monitor
+  2. test = Monitor()
+  3. test.snapshot()
